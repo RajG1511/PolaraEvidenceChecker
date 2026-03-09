@@ -54,7 +54,7 @@ def extract_text(file_path: str | Path) -> str:
 
     if suffix not in extractors:
         raise ExtractionError(
-            f"Unsupported file type: {suffix}"
+            f"Unsupported file format: {suffix}"
             f"Supported: {', '.join(extractors)}"
             )
     
