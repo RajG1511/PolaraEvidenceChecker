@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-def chunkText(text: str, chunk_size: int = 250, overlap: int = 250) -> list[str]:
+def chunkText(text: str, chunk_size: int = 250, overlap: int = 50) -> list[str]:
     """
     Split text into overlapping word-based chunks.
 
