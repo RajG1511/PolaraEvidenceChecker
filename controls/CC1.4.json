@@ -3182,7 +3182,7 @@
     }
   ],
   "thresholds": {
-    "sufficient_floor": 0.55,
+    "sufficient_floor": 0.48,
     "insufficient_ceiling": 0.28
   }
 }

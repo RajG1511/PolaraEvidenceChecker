@@ -7,6 +7,20 @@ def normalize(text: str) -> str:
     """
     return re.sub(r"[^\w\s]", " ", text.lower())
 
+def _keyword_in_text(keyword: str, doc_normalized: str) -> bool:
+    """
+    Check if a keyword appears in the document as a whole word.
+
+    Plain substring matching ("ca" in "vacation") causes false positives
+    for short keywords like "CA", "SSL", "MFA", "IAM".
+    re.search with \b word boundaries prevents this.
+
+    We still normalize both sides for case-insensitive matching.
+    """
+    pattern = r"\b" + re.escape(normalize(keyword)) + r"\b"
+    return bool(re.search(pattern, doc_normalized))
+
+
 def computeKeywordScore(document_text: str, concept_clusters: list[str | list[str]],) -> tuple[float, list[str]]:
     """
     Score concept coverage using the concept_clusters structure from the JSON.
@@ -27,7 +41,7 @@ def computeKeywordScore(document_text: str, concept_clusters: list[str | list[st
       - missing: list of concept names that were NOT found
     """
     if not concept_clusters:
-        return 0.0, []
+        return 0.0, [], []
     
     docNormalized = normalize(document_text)
     matched = []
@@ -44,7 +58,7 @@ def computeKeywordScore(document_text: str, concept_clusters: list[str | list[st
         weighted_total += weight
 
         # Check if ANY keyword in this cluster appears in the document
-        cluster_hit = any(normalize(kw) in docNormalized for kw in keywords)
+        cluster_hit = any(_keyword_in_text(kw, docNormalized) for kw in keywords)
 
         if cluster_hit:
             matched.append(name)
