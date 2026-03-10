@@ -9,10 +9,33 @@ from fastapi.responses import JSONResponse
 from api.dependencies import verify_api_key
 from polara_checker.extraction import extract_text
 from polara_checker.scorer import scoreDocument
+from contextlib import asynccontextmanager
+from polara_checker.embeddings import getModel
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Runs once when the server starts, before it accepts any requests.
+    Loading the model here means the first real request doesn't pay
+    the cold start cost — the model is already warm in memory.
+    """
+    print("Loading embedding model...")
+    getModel()
+    print("Embedding model ready.")
+
+    # Pre-load all control JSONs into the cache so the first
+    # request for each control doesn't pay a disk read cost
+    print("Pre-loading control files...")
+    for path in _CONTROLS_DIR.glob("*.json"):
+        _load_control(path.stem)   # path.stem gives "CC6.1" from "CC6.1.json"
+    print(f"Loaded {len(_controls_cache)} controls.")
+
+    yield
 
 app = FastAPI(
     title="Polara Evidence Quality Checker",
     version="1.0.0",
+    lifespan=lifespan
 )
 
 # Controls are loaded once at startup into memory.

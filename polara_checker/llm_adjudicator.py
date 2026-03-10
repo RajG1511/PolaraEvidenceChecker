@@ -83,6 +83,7 @@ Rules:
 - "insufficient": evidence shows only intent, aspiration, or vague mention
 - "uncertain": excerpts are genuinely too ambiguous to classify
 - If mismatch signals fired, weigh them heavily toward "insufficient"
+- Configured values in a table (e.g. "Required reviews: 2 — Enabled") count as enforcement
 - Focus on WHAT the evidence proves, not what it discusses"""
 
 def adjudicate(
