@@ -115,7 +115,7 @@ def scoreDocument(document_text: str, control: dict,) -> dict:
         # After this point "uncertain" never appears in the output.
         verdict        = llm_result["verdict"]
         llm_reasoning  = llm_result["reasoning"]
-        llm_confidence = llm_result["confidence"]
+        llm_confidence = llm_result.get("confidence", None)
         adjudicated    = True
 
     return {
@@ -123,7 +123,7 @@ def scoreDocument(document_text: str, control: dict,) -> dict:
         "verdict":             verdict,        # the final human-readable decision
         "adjudicated":         adjudicated,    # True if the LLM was called
         "llm_reasoning":       llm_reasoning,  # None on clear-cut cases
-        "llm_confidence":      llm_confidence, # None on clear-cut cases
+        "llm_confidence":      llm_result.get("confidence", None) if adjudicated else None, # None on clear-cut cases
         "semantic_score":      round(semanticScore, 4),
         "keyword_score":       round(keywordScore, 4),
         "specificity_score":   round(specificityScore, 4),
