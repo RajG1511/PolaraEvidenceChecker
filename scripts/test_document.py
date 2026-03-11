@@ -18,7 +18,7 @@ API_KEY = os.environ.get("CHECKER_API_KEY", "")
 # Toggle this:
 # False -> normal single-file mode
 # True  -> run every PDF in test_documents/sufficient and test_documents/insufficient
-TEST_ALL = True
+TEST_ALL = False
 
 TEST_DOCUMENTS_DIR = Path(__file__).parent.parent / "test_documents"
 
