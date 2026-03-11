@@ -97,6 +97,38 @@ CONFIG_TABLE_PATTERN = re.compile(
     re.IGNORECASE,
 )
 
+GOVERNANCE_PATTERN = re.compile(
+    r"\b("
+    # ownership / accountability
+    r"approved by|reviewed by|prepared by|owned by|assigned to|"
+    r"control owner|risk owner|process owner|business owner|"
+    r"responsible party|accountable party|approver|reviewer|sign[-\s]?off|"
+
+    # governance artifacts
+    r"raci|responsibility matrix|org chart|organization chart|"
+    r"segregation of duties|independent review|"
+
+    # meetings / oversight
+    r"meeting minutes|minutes|attendees|agenda|quorum|"
+    r"board review|committee review|management review|"
+    r"decision|discussion|follow[-\s]?up|"
+
+    # tracking / workflow
+    r"action item|open item|closed item|status|target date|due date|"
+    r"assigned owner|completion date|last reviewed|next review date|"
+
+    # risk register language
+    r"inherent risk|residual risk|likelihood|impact|risk rating|"
+    r"mitigation|control activity|fraud scenario|risk response|"
+
+    # communication / escalation
+    r"escalation path|notification timeline|distribution list|"
+    r"point of contact|stakeholder notification|external communication|"
+    r"internal communication|report concerns|speak up|hotline"
+    r")\b",
+    re.IGNORECASE,
+)
+
 def computeSpecificityScore(document_text: str) -> float:
     """
     Score how concrete and operational the document evidence is.
@@ -135,4 +167,8 @@ def computeSpecificityScore(document_text: str) -> float:
     if CONFIG_TABLE_PATTERN.search(document_text):
         signals_found += 1
 
-    return signals_found / 5.0
+    # Signal 6: Governance / tracking / ownership evidence
+    if GOVERNANCE_PATTERN.search(document_text):
+        signals_found += 1
+
+    return signals_found / 6.0

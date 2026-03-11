@@ -52,7 +52,9 @@ def _build_prompt(control: dict,
 
     return f"""You are a SOC 2 audit evidence reviewer. Your job is to decide \
 whether the evidence excerpts below demonstrate actual enforcement, \
-configuration, or process — or merely express intention or mention.
+configuration, an operating control, \
+a completed governance/process artifact, a maintained control record \
+— or merely express intention, aspiration, or a vague mention or process
 
 CONTROL ID: {control_id}
 CONTROL DESCRIPTION: {control_desc}
@@ -79,11 +81,14 @@ Respond ONLY with this JSON object, no other text:
 }}
 
 Rules:
-- "sufficient": evidence shows enforcement, configuration, or active process
-- "insufficient": evidence shows only intent, aspiration, or vague mention
+- "sufficient": evidence shows either:
+  1) technical enforcement or configuration, OR
+  2) a completed governance/process artifact with owners, dates, review history, actions, approvals, escalation paths, or tracked follow-up
+- "insufficient": evidence is only aspirational, descriptive, generic, or lacks signs that the process/control is actually being used
 - "uncertain": excerpts are genuinely too ambiguous to classify
 - If mismatch signals fired, weigh them heavily toward "insufficient"
 - Configured values in a table (e.g. "Required reviews: 2 — Enabled") count as enforcement
+- A completed rubric, register, minutes document, responsibility matrix, escalation workflow, or communication-channel table can count as sufficient even without screenshots or technical settings
 - Focus on WHAT the evidence proves, not what it discusses"""
 
 def adjudicate(
